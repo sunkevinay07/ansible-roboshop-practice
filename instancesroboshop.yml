@@ -19,6 +19,7 @@
     loop: "{{ instances }}"
     register: ec2_output
     when: operation == "create"
+    ignore_errors: true
 
   # - name: print ec2_output
   #   debug:
