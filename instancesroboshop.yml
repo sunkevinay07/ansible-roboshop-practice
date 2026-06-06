@@ -1,11 +1,10 @@
 ---
 - name: Launching Ec2 Instances in Aws
   hosts: localhost
-  become: yes
 
   vars:
     instances: ["mongodb", "redis", "mysql", "rabbitmq", "catalog", "user", "cart", "shipping", "payment", "frontend"]
-    action: "create"
+    operation: "create"
     domain_name: vinaysunke.online
     image_id: ami-0220d79f3f480ecf5
 
@@ -19,7 +18,7 @@
       - "roboshop-{{ item }}"
     loop: "{{ instances }}"
     register: ec2_output
-    when: action == "create"
+    when: operation == "create"
 
   # - name: print ec2_output
   #   debug:
@@ -35,7 +34,7 @@
       value: "{{ item.instances[0].private_ip_address }}"
       overwrite: true
     loop: "{{ ec2_output.results }}"
-    when: action == "create"
+    when: operation == "create"
 
   - name: create r53 record for frontend
     amazon.aws.route53:
@@ -49,7 +48,7 @@
     loop: "{{ ec2_output.results }}"
     when: 
     - item.item == "frontend" 
-    - action == "create"
+    - operation == "create"
 
   - name: delete r53 records
     amazon.aws.route53:
@@ -59,7 +58,7 @@
       ttl: 1
       type: A
     loop: "{{ instances  }}"  
-    when: action == "delete"
+    when: operation == "delete"
 
   - name: delete r53 record for frontend
     amazon.aws.route53:
@@ -70,7 +69,7 @@
       type: A
     loop: "{{ instances  }}"  
     when: 
-    - action == "delete"
+    - operation == "delete"
     - item == "frontend"
   
   - name: delete ec2 instances
@@ -79,4 +78,4 @@
       name: "roboshop-{{ item }}"
       wait: false
     loop: "{{ instances  }}"  
-    when: action == "delete"
+    when: operation == "delete"
