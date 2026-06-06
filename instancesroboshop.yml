@@ -3,7 +3,7 @@
   hosts: localhost
 
   vars:
-    instances: ["mongodb", "redis", "mysql", "rabbitmq", "catalog", "user", "cart", "shipping", "payment", "frontend"]
+    instances: ["redis", "mysql", "rabbitmq", "catalog", "user", "cart", "shipping", "payment", "frontend"]
     operation: "create"
     domain_name: vinaysunke.online
     image_id: ami-0220d79f3f480ecf5
